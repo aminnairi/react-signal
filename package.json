@@ -1,0 +1,60 @@
+{
+  "type": "module",
+  "name": "@aminnairi/react-signal",
+  "types": "dist/index.d.ts",
+  "description": "Signal Library for React",
+  "version": "0.1.0",
+  "homepage": "https://github.com/aminnairi/react-signal",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "bugs": {
+    "url": "https://github.com/aminnairi/react-signal/issues"
+  },
+  "author": {
+    "name": "Amin NAIRI",
+    "url": "https://github.com/aminnairi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aminnairi/react-signal.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "signal",
+    "hook",
+    "observable",
+    "useSyncExternalStore"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "rollup --config rollup.config.ts --configPlugin typescript",
+    "types": "tsc --project tsconfig.build.json --declaration --emitDeclarationOnly",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "react": ">=16.8"
+  },
+  "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "6.18.0",
+    "@rollup/plugin-terser": "0.4.4",
+    "@rollup/plugin-typescript": "11.1.5",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "rollup": "4.2.0",
+    "tslib": "2.6.2",
+    "typescript": "5.2.2",
+    "vite": "^4.4.5"
+  }
+}
