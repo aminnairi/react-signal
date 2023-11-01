@@ -1,9 +1,8 @@
 import { Fragment } from "react";
-import { useSignal } from "../hooks";
-import { counterSignal } from "../signals/counter";
+import { useCounter } from "../hooks/counter";
 
 export function HomePage() {
-  const [counter, setCounter] = useSignal(counterSignal);
+  const [counter, setCounter] = useCounter();
 
   return (
     <Fragment>
