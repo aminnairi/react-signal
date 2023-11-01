@@ -193,6 +193,149 @@ function Users() {
 
 [Back to summary](#summary)
 
+## Usage
+
+### Custom hook
+
+If you're looking to efficiently manage state in your React applications, the `@aminnairi/react-signal` library provides a powerful tool. One of the key features it offers is the ability to create custom hooks for shared state management. In the provided example, we have a custom hook named `useCounter`.
+
+With `useCounter`, you can effortlessly access and modify a shared state variable across multiple components. This state is encapsulated within a `Signal` object, which ensures reactivity and synchronization among components that utilize this hook. This approach simplifies state management, making it easier for you to maintain and share state variables without the need for prop drilling.
+
+```tsx
+import { Signal, useSignal } from "@aminnairi/react-signal";
+
+const counterSignal = new Signal();
+
+export const useCounter = () => {
+  return useSignal(counterSignal);
+};
+```
+
+```tsx
+import { Fragment } from "react";
+import { useCounter } from "../hooks/counter";
+
+export const AboutPage = () => {
+  const [counter, setCounter] = useCounter();
+
+  return (
+    <Fragment>
+      <h1>About</h1>
+      <button onClick={() => setCounter(counter - 1)}>
+        Decrement
+      </button>
+      <span>
+        {counter}
+      </span>
+      <button onClick={() => setCounter(counter + 1)}>
+        Increment
+      </button>
+    </Fragment>
+  );
+};
+```
+
+```tsx
+import { Fragment } from "react";
+import { useCounter } from "../hooks/counter";
+
+export const HomePage = () => {
+  const [counter, setCounter] = useCounter();
+
+  return (
+    <Fragment>
+      <h1>Home</h1>
+      <button onClick={() => setCounter(counter - 1)}>
+        Decrement
+      </button>
+      <span>
+        {counter}
+      </span>
+      <button onClick={() => setCounter(counter + 1)}>
+        Increment
+      </button>
+    </Fragment>
+  );
+};
+```
+
+[Back to summary](#summary)
+
+### Computed value
+
+The library allows you to create computed values, which are values that depend on other state variables and automatically update when their dependencies change. In the example, we demonstrate how to use the `useSignal` hook to create a computed value, `doubleCounter`.
+
+By initializing a `Signal` object for the `counter` state and using the `useMemo` hook, you can compute `doubleCounter`, which is always double the value of `counter`. The great advantage here is that `doubleCounter` will automatically recalculate whenever `counter` changes, ensuring that it always reflects the correct value based on its dependencies.
+
+To further enhance performance, you can define functions like `increment` and `decrement` using the `useCallback` hook, which optimizes these functions so that they are recreated only when necessary, based on their dependencies.
+
+```tsx
+import { Fragment, useCallback, useMemo } from "react";
+import { Signal, useSignal } from "../hooks";
+
+export const HomePage = () => {
+  const [counter, setCounter] = useSignal(new Signal(0));
+  const doubleCounter = useMemo(() => counter * 2, [counter]);
+
+  const increment = useCallback(() => {
+    setCounter(counter + 1);
+  }, [counter, setCounter]);
+
+  const decrement = useCallback(() => {
+    setCounter(counter - 1);
+  }, [counter, setCounter]);
+
+  return (
+    <Fragment>
+      <button onClick={decrement}>
+        Decrement
+      </button>
+      <span>{counter} (double is {doubleCounter})</span>
+      <button onClick={increment}>
+        Increment
+      </button>
+    </Fragment>
+  );
+}
+```
+
+[Back to summary](#summary)
+
+### Persistence
+
+If you need to add persistence to your React applications, the `@aminnairi/react-signal` library provides an elegant solution. In the example, we showcase how to persist state data using the browser's `localStorage`.
+
+Starting with the initialization of the `counter` state, you can choose to load the value from `localStorage` if it exists, or set it to a default value (0) if it doesn't. This approach enables the component to retain and initialize the state from previous user sessions.
+
+To handle state changes, the library offers a convenient solution. By defining an `increment` function and utilizing the `useEffect` hook, you can save the current `counter` value to `localStorage` each time it changes. This straightforward approach ensures that the counter's value is consistently stored and retrieved across different browser sessions, providing a seamless and persistent experience for you.
+
+```tsx
+import { Fragment, useCallback, useEffect } from "react";
+import { Signal, useSignal } from "../hooks";
+
+export const HomePage = () => {
+  const [counter, setCounter] = useSignal(new Signal(Number(window.localStorage.getItem("counter")) || 0));
+
+  const increment = useCallback(() => {
+    setCounter(counter + 1);
+  }, [counter, setCounter]);
+
+  useEffect(() => {
+    window.localStorage.setItem("counter", String(counter));
+  }, [counter]);
+
+  return (
+    <Fragment>
+      <button onClick={increment}>
+        {counter}
+      </button>
+    </Fragment>
+  );
+}
+```
+
+[Back to summary](#summary)
+
 ## Contributing
 
 The `CONTRIBUTING.md` file contains guidelines and instructions for individuals who want to contribute to this project. Whether you're interested in reporting bugs, suggesting improvements, or submitting code changes, the contributing guide provides valuable information on how to get involved. We welcome contributions from the community and appreciate your efforts to help make this project better.
