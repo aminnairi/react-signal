@@ -11,8 +11,12 @@ Signal Library for React
 - [API](#api)
   - [Signal](#signal)
 - [useSignal](#usesignal)
+- [Contributing](#contributing)
+- [Issues](#issues)
+- [Security](#security)
 - [License](#license)
 - [Changelog](#changelog)
+- [Code of conduct](#code-of-conduct)
 
 [Back to summary](#summary)
 
@@ -126,6 +130,22 @@ function Counter() {
 
 [Back to summary](#summary)
 
+## Contributing
+
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
+## Issues
+
+See [`issues`](./issues).
+
+[Back to summary](#summary)
+
+## Security
+
+See [`SECURITY.md`](./SECURITY.md).
+
+[Back to summary](#summary)
+
 ## License
 
 See [`LICENSE`](./LICENSE).
@@ -135,5 +155,11 @@ See [`LICENSE`](./LICENSE).
 ## Changelog
 
 See [`CHANGELOG.md`](./CHANGELOG.md).
+
+[Back to summary](#summary)
+
+## Code of conduct
+
+See [`CODE_OF_CONDUCT`](./CODE_OF_CONDUCT.md).
 
 [Back to summary](#summary)
