@@ -136,7 +136,7 @@ function Counter() {
 
 ```tsx
 import React, { Fragment, ChangeEventHandler, FormEventHandler, useCallback } from "react";
-import { useSignal } from "@aminnairi/react-signal";
+import { Signal, useSignal } from "@aminnairi/react-signal";
 
 type User = {
   id: string,
