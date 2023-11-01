@@ -132,34 +132,36 @@ function Counter() {
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+The `CONTRIBUTING.md` file contains guidelines and instructions for individuals who want to contribute to this project. Whether you're interested in reporting bugs, suggesting improvements, or submitting code changes, the contributing guide provides valuable information on how to get involved. We welcome contributions from the community and appreciate your efforts to help make this project better.
+
+[Back to summary](#summary)
 
 ## Issues
 
-See [`issues`](./issues).
+The `issues` section is where you can view and track the current issues, bug reports, and feature requests related to this project. It serves as a central place for users and contributors to discuss and report problems, share ideas, and provide feedback. If you encounter an issue or have a suggestion, please check the issues section to see if it's already been raised or to submit a new issue.
 
 [Back to summary](#summary)
 
 ## Security
 
-See [`SECURITY.md`](./SECURITY.md).
+The `SECURITY.md` file outlines our security policy and provides guidance on how to report security vulnerabilities in this project. We take security seriously and encourage responsible disclosure of any security issues you may discover. Please review this section for details on how to report security concerns and how we handle them.
 
 [Back to summary](#summary)
 
 ## License
 
-See [`LICENSE`](./LICENSE).
+The `LICENSE` file contains information about the licensing terms and conditions for using this project. It specifies how the project's code can be used, modified, and distributed. It's important to review and understand the project's license to ensure compliance with its terms.
 
 [Back to summary](#summary)
 
 ## Changelog
 
-See [`CHANGELOG.md`](./CHANGELOG.md).
+The `CHANGELOG.md` file provides a detailed history of changes, updates, and new features in this project. It's a useful resource for understanding the evolution of the software and identifying what has been added or fixed in each release.
 
 [Back to summary](#summary)
 
-## Code of conduct
+## Code of Conduct
 
-See [`CODE_OF_CONDUCT`](./CODE_OF_CONDUCT.md).
+The `CODE_OF_CONDUCT.md` outlines the expectations and behavior we uphold in this project's community. It sets guidelines for respectful and inclusive interactions among contributors, users, and maintainers. We encourage everyone to review and adhere to the code of conduct to foster a welcoming and productive environment.
 
 [Back to summary](#summary)
