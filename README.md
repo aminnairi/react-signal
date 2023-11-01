@@ -84,7 +84,13 @@ class Signal<Value> {
 The `Signal` class is the core component of the library. It represents a signal that can be used to manage state changes and notify components when the state is updated. You can create instances of the `Signal` class to represent different pieces of state in your application.
 
 ```typescript
+import { Signal } from "@aminnairi/react-signal";
+
 export const countSignal = new Signal(0);
+```
+
+```typescript
+import { Signal } from "@aminnairi/react-signal";
 
 export type User = {
   id: string,
@@ -106,8 +112,8 @@ const useSignal: <Value>(signal: Signal<Value>) => [Value, (value: Value) => voi
 The `useSignal` hook is used to integrate a `Signal` instance with a functional component. It returns the current value of the signal and a function to update the signal's value. This hook makes it easy to work with signals in your React components.
 
 ```tsx
-import React, { useCallback } from 'react';
-import { Signal } from '@aminnairi/react-signal';
+import React, { Fragment, useCallback } from "react";
+import { useSignal } from "@aminnairi/react-signal";
 import { countSignal } from "../signals/count";
 
 function Counter() {
@@ -118,12 +124,12 @@ function Counter() {
   }, [count]);
 
   return (
-    <div>
+    <Fragment>
       <p>Count: {count}</p>
       <button onClick={increment}>
         Increment
       </button>
-    </div>
+    </Fragment>
   );
 }
 ```
