@@ -134,6 +134,63 @@ function Counter() {
 }
 ```
 
+```tsx
+import React, { Fragment, ChangeEventHandler, FormEventHandler, useCallback } from "react";
+import { useSignal } from "@aminnairi/react-signal";
+
+type User = {
+  id: string,
+  email: string,
+  age: number
+}
+
+function Users() {
+  const [users, setUsers] = useSignal<Array<User>>(new Signal([]));
+  const [email, setEmail] = useSignal(new Signal(""));
+  const [age, setAge] = useSignal(new Signal(0));
+
+  const updateEmail: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
+    setEmail(event.target.value);
+  }, [setEmail]);
+
+  const updateAge: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
+    setAge(Number(event.target.value));
+  }, [setAge]);
+
+  const addUser: FormEventHandler = useCallback(event => {
+    event.preventDefault();
+
+    setUsers([
+      ...users,
+      {
+        id: window.crypto.randomUUID(),
+        email,
+        age
+      }
+    ]);
+  }, [users, email, age]);
+
+  return (
+    <Fragment>
+      <form onSubmit={addUser}>
+        <input type="email" value={email} onChange={updateEmail} />
+        <input type="number" value={age} onChange={updateAge} />
+        <button type="submit">
+          Add
+        </button>
+      </form>
+      <ul>
+        {users.map(user => (
+          <li>
+            {user.email} - {user.age}
+          </li>
+        ))}
+      </ul>
+    </Fragment>
+  );
+}
+```
+
 [Back to summary](#summary)
 
 ## Contributing
