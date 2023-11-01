@@ -10,7 +10,7 @@ Signal Library for React
 - [Uninstallation](#uninstallation)
 - [API](#api)
   - [Signal](#signal)
-- [useSignal](#usesignal)
+  - [useSignal](#usesignal)
 - [Contributing](#contributing)
 - [Issues](#issues)
 - [Security](#security)
@@ -103,7 +103,7 @@ export const usersSignal = new Signal<Array<User>>([]);
 
 [Back to summary](#summary)
 
-## useSignal
+### useSignal
 
 ```typescript
 const useSignal: <Value>(signal: Signal<Value>) => [Value, (value: Value) => void];
