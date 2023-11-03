@@ -75,16 +75,16 @@ npm uninstall @aminnairi/react-signal
 
 ```typescript
 type Subscriber = () => void;
+type Update<Value> = (oldValue: Value) => Value;
 
 class Signal<Value> {
-  private subscribers;
-  private value;
-
-  public constructor(initialValue: Value);
-
-  public emit(newValue: Value): void;
-  public getValue(): Value;
-  public subscribe(newSubscriber: Subscriber): () => void;
+    private subscribers;
+    private value;
+    constructor(initialValue: Value);
+    emit(newValue: Value): void;
+    getValue(): Value;
+    subscribe(newSubscriber: Subscriber): () => void;
+    next(update: Update<Value>): void;
 }
 ```
 
