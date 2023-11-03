@@ -158,6 +158,8 @@ function Counter() {
 ### useSignalConstructor
 
 ```typescript
+type SignalConstructor<Value> = () => Signal<Value>;
+
 const useSignalConstructor: <Value>(signalConstructor: SignalConstructor<Value>) => Value;
 ```
 
