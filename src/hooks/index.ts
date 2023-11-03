@@ -4,6 +4,8 @@ export type Subscriber = () => void;
 
 export type Validation<Value> = (value: unknown) => value is Value;
 
+export type SignalConstructor<Value> = () => Signal<Value>
+
 export type StorageSignalConstructor<Value> = {
   storage: Storage,
   key: string,
@@ -110,4 +112,8 @@ export const useSignal = <Value>(signal: Signal<Value>): [Value, (value: Value) 
     state,
     setState
   ];
+}
+
+export const useSignalConstructor = <Value>(signalConstructor: SignalConstructor<Value>) => {
+  return useSignal(signalConstructor());
 }
