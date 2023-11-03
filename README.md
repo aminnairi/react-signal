@@ -2,6 +2,8 @@
 
 Signal Library for React
 
+![npm type definitions](https://img.shields.io/npm/types/%40aminnairi%2Freact-signal)
+
 ## Summary
 
 - [Introduction](#introduction)
@@ -26,7 +28,6 @@ Signal Library for React
 - [License](#license)
 - [Changelog](#changelog)
 - [Code of Conduct](#code-of-conduct)
-
 
 [Back to summary](#summary)
 
