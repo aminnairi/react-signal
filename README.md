@@ -201,6 +201,41 @@ function Users() {
 
 [Back to summary](#summary)
 
+### useSignalConstructor
+
+```typescript
+const useSignalConstructor: <Value>(signalConstructor: SignalConstructor<Value>) => [Value, (value: Value) => void];
+```
+
+The `useSignalConstructor` function is used to create and initialize a `Signal` instance within a functional component. It accepts a `SignalConstructor` as its parameter, which defines the initial value of the signal and an optional validation function. This hook is especially useful for managing state in your React components.
+
+```tsx
+import { Capacitor } from "@capacitor/core";
+import { Signal, useSignalConstructor } from "@aminnairi/react-signal";
+
+export const HomePage = () => {
+  const [title] = useSignalConstructor(() => {
+    const platform = Capacitor.getPlatform();
+
+    if (pltaform === "ios") {
+      return new Signal("Welcome, iOS user!");
+    }
+
+    if (pltaform === "android") {
+      return new Signal("Welcome, Android user!");
+    }
+
+    return new Signal("Welcome, user!");
+  });
+
+  return title;
+};
+```
+
+In this example, the `useSignalConstructor` hook is used to create and initialize a `Signal` instance with an initial value of `0`. The `countSignal` represents the state, and `setCount` is the function to update its value.
+
+[Back to summary](#summary)
+
 ### LocalStorageSignal
 
 ```typescript
