@@ -97,7 +97,7 @@ export class LocalStorageSignal<Value> extends StorageSignal<Value> {
 }
 
 export class SessionStorageSignal<Value> extends StorageSignal<Value> {
-  public constructor({ key, value, validation }: StorageSignalConstructor<Value>) {
+  public constructor({ key, value, validation }: SessionStorageSignalConstructor<Value>) {
     super({
       storage: sessionStorage,
       key,
