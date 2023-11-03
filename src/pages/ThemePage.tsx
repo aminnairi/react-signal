@@ -3,11 +3,11 @@ import { useSignal } from "../hooks";
 import { themeSignal } from "../signals/theme";
 
 export const ThemePage = () => {
-  const [theme, setTheme] = useSignal(themeSignal);
+  const theme = useSignal(themeSignal);
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === "light" ? "dark" : "light");
-  }, [setTheme, theme]);
+    themeSignal.next(oldTheme => oldTheme === "light" ? "dark" : "light");
+  }, []);
 
   const reset = useCallback(() => {
     themeSignal.remove();
