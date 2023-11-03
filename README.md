@@ -4,6 +4,8 @@ Signal Library for React
 
 [![npm (scoped)](https://img.shields.io/npm/v/%40aminnairi/react-signal)](https://www.npmjs.com/package/@aminnairi/react-signal)
 [![npm type definitions](https://img.shields.io/npm/types/%40aminnairi%2Freact-signal)](https://www.github.com/aminnairi/react-signal)
+[![Coverage status](https://img.shields.io/coverallsCoverage/github/aminnairi/react-signal)](https://coveralls.io/github/aminnairi/react-signal?branch=development)
+
 
 ## Summary
 
