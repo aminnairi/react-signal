@@ -11,12 +11,20 @@ Signal Library for React
 - [API](#api)
   - [Signal](#signal)
   - [useSignal](#usesignal)
+  - [LocalStorageSignal](#localstoragesignal)
+  - [SessionStorageSignal](#sessionstoragesignal)
+  - [StorageSignal](#storagesignal)
+- [Usage](#usage)
+  - [Custom hook](#custom-hook)
+  - [Computed value](#computed-value)
+  - [Persistence](#persistence)
 - [Contributing](#contributing)
 - [Issues](#issues)
 - [Security](#security)
 - [License](#license)
 - [Changelog](#changelog)
-- [Code of conduct](#code-of-conduct)
+- [Code of Conduct](#code-of-conduct)
+
 
 [Back to summary](#summary)
 
@@ -193,6 +201,219 @@ function Users() {
 
 [Back to summary](#summary)
 
+### LocalStorageSignal
+
+```typescript
+type Validation<Value> = (value: unknown) => value is Value;
+
+type StorageSignalConstructor<Value> = {
+    storage: Storage;
+    key: string;
+    value: Value;
+    validation: Validation<Value>;
+};
+
+type LocalStorageSignalConstructor<Value> = Omit<StorageSignalConstructor<Value>, "storage">;
+
+class LocalStorageSignal<Value> extends StorageSignal<Value> {
+  constructor({ key, value, validation }: LocalStorageSignalConstructor<Value>);
+}
+```
+
+The `LocalStorageSignal` is another feature of the `@aminnairi/react-signal` library that offers built-in local storage persistence for managing state variables. Local storage allows you to store data on the user's device even after they close the browser. With the `LocalStorageSignal`, you can define a key, an initial value, and an optional validation function to ensure the stored data is of the correct type.
+
+```typescript
+import { LocalStorageSignal } from "@aminnairi/react-signal";
+
+export type Theme = "light" | "dark"
+
+export const themeSignal = new LocalStorageSignal<Theme>({
+  key: "theme", 
+  value: "dark",
+  validation: (value): value is Theme => {
+    return value === "dark" || value === "light"
+  }
+});
+```
+
+```tsx
+import { Fragment, useCallback } from "react";
+import { useSignal } from "@aminnairi/react-signal";
+import { themeSignal } from "../signals/theme";
+
+export const ThemePage = () => {
+  const [theme, setTheme] = useSignal(themeSignal);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(theme === "light" ? "dark" : "light");
+  }, [setTheme, theme]);
+
+  const reset = useCallback(() => {
+    themeSignal.reset();
+  }, []);
+
+  return (
+    <Fragment>
+      <button onClick={toggleTheme}>
+        Toggle theme ({theme})
+      </button>
+      <button onClick={reset}>
+        Clear storage
+      </button>
+    </Fragment>
+  );
+}
+```
+
+In this example, we create a `themeSignal` that is stored in local storage under the key "theme." This allows you to persist and manage the theme of your application across different user sessions, providing a seamless user experience.
+
+[Back to summary](#summary)
+
+### SessionStorageSignal
+
+```typescript
+type Validation<Value> = (value: unknown) => value is Value;
+
+type StorageSignalConstructor<Value> = {
+    storage: Storage;
+    key: string;
+    value: Value;
+    validation: Validation<Value>;
+};
+
+type SessionStorageSignalConstructor<Value> = Omit<StorageSignalConstructor<Value>, "storage">;
+
+class SessionStorageSignal<Value> extends StorageSignal<Value> {
+  constructor({ key, value, validation }: StorageSignalConstructor<Value>);
+}
+```
+
+The `SessionStorageSignal` is a feature of the `@aminnairi/react-signal` library that allows you to manage state variables with built-in session storage persistence. Session storage is similar to local storage, but the data is only available for the duration of a single page session. When you create a `SessionStorageSignal`, you can define a key, an initial value, and an optional validation function to ensure the stored data is of the correct type.
+
+```typescript
+import { SessionStorageSignal } from "@aminnairi/react-signal";
+
+export type Theme = "light" | "dark"
+
+export const themeSignal = new SessionStorageSignal<Theme>({
+  key: "theme", 
+  value: "dark",
+  validation: (value): value is Theme => {
+    return value === "dark" || value === "light"
+  }
+});
+```
+
+```tsx
+import { Fragment, useCallback } from "react";
+import { useSignal } from "@aminnairi/react-signal";
+import { themeSignal } from "../signals/theme";
+
+export const ThemePage = () => {
+  const [theme, setTheme] = useSignal(themeSignal);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(theme === "light" ? "dark" : "light");
+  }, [setTheme, theme]);
+
+  const reset = useCallback(() => {
+    themeSignal.reset();
+  }, []);
+
+  return (
+    <Fragment>
+      <button onClick={toggleTheme}>
+        Toggle theme ({theme})
+      </button>
+      <button onClick={reset}>
+        Clear storage
+      </button>
+    </Fragment>
+  );
+}
+```
+
+In this example, we create a `themeSignal` that is stored in session storage under the key "theme." It allows you to persist and manage the theme of your application across different user sessions.
+
+[Back to summary](#summary)
+
+### StorageSignal
+
+```typescript
+type Validation<Value> = (value: unknown) => value is Value;
+
+type StorageSignalConstructor<Value> = {
+    storage: Storage;
+    key: string;
+    value: Value;
+    validation: Validation<Value>;
+};
+
+class StorageSignal<Value> extends Signal<Value> {
+    private key;
+    private storage;
+    constructor({ storage, key, value, validation }: StorageSignalConstructor<Value>);
+    emit(newValue: Value): void;
+    remove(): void;
+}
+```
+
+The `StorageSignal` is a versatile feature of the `@aminnairi/react-signal` library that enables you to manage state variables with custom storage solutions. It's not limited to local storage or session storage; you can use it with any storage implementation that adheres to the Storage interface. With the `StorageSignal`, you can specify the storage, key, initial value, and an optional validation function to ensure the stored data is of the correct type.
+
+```typescript
+import { StorageSignal } from "@aminnairi/react-signal";
+
+export type Theme = "light" | "dark"
+
+export class MyStorage implements Storage {
+  //...
+}
+
+const myStorage = new MyStorage();
+
+export const themeSignal = new StorageSignal<Theme>({
+  storage: myStorage,
+  key: "theme", 
+  value: "dark",
+  validation: (value): value is Theme => {
+    return value === "dark" || value === "light"
+  }
+});
+```
+
+```tsx
+import { Fragment, useCallback } from "react";
+import { useSignal } from "@aminnairi/react-signal";
+import { themeSignal } from "../signals/theme";
+
+export const ThemePage = () => {
+  const [theme, setTheme] = useSignal(themeSignal);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(theme === "light" ? "dark" : "light");
+  }, [setTheme, theme]);
+
+  const reset = useCallback(() => {
+    themeSignal.reset();
+  }, []);
+
+  return (
+    <Fragment>
+      <button onClick={toggleTheme}>
+        Toggle theme ({theme})
+      </button>
+      <button onClick={reset}>
+        Clear storage
+      </button>
+    </Fragment>
+  );
+}
+```
+
+In this example, we create a `themeSignal` that uses a custom storage solution (in this case, `MyStorage`) to persist and manage the theme of your application. This approach allows you to use your own storage solution while still benefiting from the features of the `StorageSignal`.
+
+[Back to summary](#summary)
+
 ## Usage
 
 ### Custom hook
@@ -271,7 +492,7 @@ To further enhance performance, you can define functions like `increment` and `d
 
 ```tsx
 import { Fragment, useCallback, useMemo } from "react";
-import { Signal, useSignal } from "../hooks";
+import { Signal, useSignal } from "@aminnairi/react-signal";
 
 export const HomePage = () => {
   const [counter, setCounter] = useSignal(new Signal(0));
@@ -293,41 +514,6 @@ export const HomePage = () => {
       <span>{counter} (double is {doubleCounter})</span>
       <button onClick={increment}>
         Increment
-      </button>
-    </Fragment>
-  );
-}
-```
-
-[Back to summary](#summary)
-
-### Persistence
-
-If you need to add persistence to your React applications, the `@aminnairi/react-signal` library provides an elegant solution. In the example, we showcase how to persist state data using the browser's `localStorage`.
-
-Starting with the initialization of the `counter` state, you can choose to load the value from `localStorage` if it exists, or set it to a default value (0) if it doesn't. This approach enables the component to retain and initialize the state from previous user sessions.
-
-To handle state changes, the library offers a convenient solution. By defining an `increment` function and utilizing the `useEffect` hook, you can save the current `counter` value to `localStorage` each time it changes. This straightforward approach ensures that the counter's value is consistently stored and retrieved across different browser sessions, providing a seamless and persistent experience for you.
-
-```tsx
-import { Fragment, useCallback, useEffect } from "react";
-import { Signal, useSignal } from "../hooks";
-
-export const HomePage = () => {
-  const [counter, setCounter] = useSignal(new Signal(Number(window.localStorage.getItem("counter")) || 0));
-
-  const increment = useCallback(() => {
-    setCounter(counter + 1);
-  }, [counter, setCounter]);
-
-  useEffect(() => {
-    window.localStorage.setItem("counter", String(counter));
-  }, [counter]);
-
-  return (
-    <Fragment>
-      <button onClick={increment}>
-        {counter}
       </button>
     </Fragment>
   );
