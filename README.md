@@ -113,7 +113,7 @@ export const usersSignal = new Signal<Array<User>>([]);
 ### useSignal
 
 ```typescript
-const useSignal: <Value>(signal: Signal<Value>) => [Value, (value: Value) => void];
+const useSignal: <Value>(signal: Signal<Value>) => Value;
 ```
 
 The `useSignal` hook is used to integrate a `Signal` instance with a functional component. It returns the current value of the signal and a function to update the signal's value. This hook makes it easy to work with signals in your React components.
@@ -124,10 +124,10 @@ import { useSignal } from "@aminnairi/react-signal";
 import { countSignal } from "../signals/count";
 
 function Counter() {
-  const [count, setCount] = useSignal(countSignal);
+  const count = useSignal(countSignal);
 
   const increment = useCallback(() => {
-    setCount(count + 1);
+    countSignal.emit(count + 1);
   }, [count]);
 
   return (
@@ -141,69 +141,12 @@ function Counter() {
 }
 ```
 
-```tsx
-import React, { Fragment, ChangeEventHandler, FormEventHandler, useCallback } from "react";
-import { Signal, useSignal } from "@aminnairi/react-signal";
-
-type User = {
-  id: string,
-  email: string,
-  age: number
-}
-
-function Users() {
-  const [users, setUsers] = useSignal<Array<User>>(new Signal([]));
-  const [email, setEmail] = useSignal(new Signal(""));
-  const [age, setAge] = useSignal(new Signal(0));
-
-  const updateEmail: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
-    setEmail(event.target.value);
-  }, [setEmail]);
-
-  const updateAge: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
-    setAge(Number(event.target.value));
-  }, [setAge]);
-
-  const addUser: FormEventHandler = useCallback(event => {
-    event.preventDefault();
-
-    setUsers([
-      ...users,
-      {
-        id: window.crypto.randomUUID(),
-        email,
-        age
-      }
-    ]);
-  }, [users, email, age]);
-
-  return (
-    <Fragment>
-      <form onSubmit={addUser}>
-        <input type="email" value={email} onChange={updateEmail} />
-        <input type="number" value={age} onChange={updateAge} />
-        <button type="submit">
-          Add
-        </button>
-      </form>
-      <ul>
-        {users.map(user => (
-          <li>
-            {user.email} - {user.age}
-          </li>
-        ))}
-      </ul>
-    </Fragment>
-  );
-}
-```
-
 [Back to summary](#summary)
 
 ### useSignalConstructor
 
 ```typescript
-const useSignalConstructor: <Value>(signalConstructor: SignalConstructor<Value>) => [Value, (value: Value) => void];
+const useSignalConstructor: <Value>(signalConstructor: SignalConstructor<Value>) => Value;
 ```
 
 The `useSignalConstructor` function is used to create and initialize a `Signal` instance within a functional component. It accepts a `SignalConstructor` as its parameter, which defines the initial value of the signal and an optional validation function. This hook is especially useful for managing state in your React components.
@@ -213,7 +156,7 @@ import { Capacitor } from "@capacitor/core";
 import { Signal, useSignalConstructor } from "@aminnairi/react-signal";
 
 export const HomePage = () => {
-  const [title] = useSignalConstructor(() => {
+  const title = useSignalConstructor(() => {
     const platform = Capacitor.getPlatform();
 
     if (pltaform === "ios") {
@@ -276,11 +219,11 @@ import { useSignal } from "@aminnairi/react-signal";
 import { themeSignal } from "../signals/theme";
 
 export const ThemePage = () => {
-  const [theme, setTheme] = useSignal(themeSignal);
+  const theme = useSignal(themeSignal);
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === "light" ? "dark" : "light");
-  }, [setTheme, theme]);
+    themeSignal.emit(theme === "light" ? "dark" : "light");
+  }, [theme]);
 
   const reset = useCallback(() => {
     themeSignal.reset();
@@ -344,11 +287,11 @@ import { useSignal } from "@aminnairi/react-signal";
 import { themeSignal } from "../signals/theme";
 
 export const ThemePage = () => {
-  const [theme, setTheme] = useSignal(themeSignal);
+  const theme = useSignal(themeSignal);
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === "light" ? "dark" : "light");
-  }, [setTheme, theme]);
+    themeSignal.emit(theme === "light" ? "dark" : "light");
+  }, [theme]);
 
   const reset = useCallback(() => {
     themeSignal.reset();
@@ -421,11 +364,11 @@ import { useSignal } from "@aminnairi/react-signal";
 import { themeSignal } from "../signals/theme";
 
 export const ThemePage = () => {
-  const [theme, setTheme] = useSignal(themeSignal);
+  const theme = useSignal(themeSignal);
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === "light" ? "dark" : "light");
-  }, [setTheme, theme]);
+    themeSignal.emit(theme === "light" ? "dark" : "light");
+  }, [theme]);
 
   const reset = useCallback(() => {
     themeSignal.reset();
@@ -457,12 +400,27 @@ If you're looking to efficiently manage state in your React applications, the `@
 With `useCounter`, you can effortlessly access and modify a shared state variable across multiple components. This state is encapsulated within a `Signal` object, which ensures reactivity and synchronization among components that utilize this hook. This approach simplifies state management, making it easier for you to maintain and share state variables without the need for prop drilling.
 
 ```tsx
+import { useCallback } from "react";
 import { Signal, useSignal } from "@aminnairi/react-signal";
 
-const counterSignal = new Signal();
+export const counterSignal = new Signal(0);
 
 export const useCounter = () => {
-  return useSignal(counterSignal);
+  const counter = useSignal(counterSignal);
+
+  const increment = useCallback(() => {
+    counterSignal.emit(counter + 1);
+  }, [counter]);
+
+  const decrement = useCallback(() => {
+    counterSignal.emit(counter - 1);
+  }, [counter]);
+
+  return {
+    counter,
+    increment,
+    decrement
+  };
 };
 ```
 
@@ -471,18 +429,18 @@ import { Fragment } from "react";
 import { useCounter } from "../hooks/counter";
 
 export const AboutPage = () => {
-  const [counter, setCounter] = useCounter();
+  const { counter, increment, decrement } = useCounter();
 
   return (
     <Fragment>
       <h1>About</h1>
-      <button onClick={() => setCounter(counter - 1)}>
+      <button onClick={decrement}>
         Decrement
       </button>
       <span>
         {counter}
       </span>
-      <button onClick={() => setCounter(counter + 1)}>
+      <button onClick={increment}>
         Increment
       </button>
     </Fragment>
@@ -495,18 +453,18 @@ import { Fragment } from "react";
 import { useCounter } from "../hooks/counter";
 
 export const HomePage = () => {
-  const [counter, setCounter] = useCounter();
+  const { counter, increment, decrement } = useCounter();
 
   return (
     <Fragment>
       <h1>Home</h1>
-      <button onClick={() => setCounter(counter - 1)}>
+      <button onClick={decrement}>
         Decrement
       </button>
       <span>
         {counter}
       </span>
-      <button onClick={() => setCounter(counter + 1)}>
+      <button onClick={increment}>
         Increment
       </button>
     </Fragment>
@@ -528,17 +486,19 @@ To further enhance performance, you can define functions like `increment` and `d
 import { Fragment, useCallback, useMemo } from "react";
 import { Signal, useSignal } from "@aminnairi/react-signal";
 
+const counterSignal = new Signal(0);
+
 export const HomePage = () => {
-  const [counter, setCounter] = useSignal(new Signal(0));
+  const counter = useSignal(counterSignal);
   const doubleCounter = useMemo(() => counter * 2, [counter]);
 
   const increment = useCallback(() => {
-    setCounter(counter + 1);
-  }, [counter, setCounter]);
+    counterSignal.emit(counter + 1);
+  }, [counter]);
 
   const decrement = useCallback(() => {
-    setCounter(counter - 1);
-  }, [counter, setCounter]);
+    counterSignal.emit(counter - 1);
+  }, [counter]);
 
   return (
     <Fragment>
