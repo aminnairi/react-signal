@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 
 export type Subscriber = () => void;
 
@@ -101,17 +101,10 @@ export class SessionStorageSignal<Value> extends StorageSignal<Value> {
   }
 }
 
-export const useSignal = <Value>(signal: Signal<Value>): [Value, (value: Value) => void] => {
+export const useSignal = <Value>(signal: Signal<Value>): Value => {
   const state = useSyncExternalStore(signal.subscribe.bind(signal), signal.getValue.bind(signal));
 
-  const setState = useCallback((value: Value) => {
-    signal.emit(value);
-  }, [signal]);
-
-  return [
-    state,
-    setState
-  ];
+  return state;
 }
 
 export const useSignalConstructor = <Value>(signalConstructor: SignalConstructor<Value>) => {
