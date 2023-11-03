@@ -19,12 +19,14 @@ Signal Library for React
   - [Custom hook](#custom-hook)
   - [Computed value](#computed-value)
   - [HTTP requests](#http-requests)
+  - [Object](#object)
 - [Contributing](#contributing)
 - [Issues](#issues)
 - [Security](#security)
 - [License](#license)
 - [Changelog](#changelog)
 - [Code of Conduct](#code-of-conduct)
+
 
 [Back to summary](#summary)
 
@@ -613,6 +615,60 @@ export const UserPage = () => {
     </table>
   );
 };
+```
+
+### Object
+
+In this example, we demonstrate how to use the library for managing registration-related state in a React component. The code showcases the creation of a `registerSignal` signal instance, which is used to manage email and password fields within a registration form. This library simplifies the process of handling user input and keeping the component's state synchronized with minimal effort.
+
+```typescript
+import { Signal } from "@aminnairi/react-signal";
+
+export const registerSignal = new Signal({
+  email: "",
+  password: ""
+});
+```
+
+```tsx
+import { ChangeEventHandler, useCallback } from "react";
+import { useSignal } from "@aminnairi/react-signal"
+import { registerSignal } from "../signals/register";
+
+export const RegisterPage = () => {
+  const register = useSignal(registerSignal);
+
+  const setEmail: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
+    registerSignal.next(oldRegister => {
+      return {
+        ...oldRegister,
+        email: event.target.value
+      }
+    });
+  }, []);
+
+  const setPassword: ChangeEventHandler<HTMLInputElement> = useCallback(event => {
+    registerSignal.next(oldRegister => {
+      return {
+        ...oldRegister,
+        password: event.target.value
+      }
+    });
+  }, []);
+
+  return (
+    <form>
+      <input
+        type="email"
+        value={register.email}
+        onChange={setEmail} />
+      <input
+        type="password"
+        value={register.password}
+        onChange={setPassword} />
+    </form>
+  );
+}
 ```
 
 ## Contributing
