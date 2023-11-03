@@ -6,6 +6,8 @@ export type Validation<Value> = (value: unknown) => value is Value;
 
 export type SignalConstructor<Value> = () => Signal<Value>
 
+export type Update<Value> = (oldValue: Value) => Value;
+
 export type StorageSignalConstructor<Value> = {
   storage: Storage,
   key: string,
@@ -45,6 +47,10 @@ export class Signal<Value> {
       const foundSubscriberIndex = this.subscribers.findIndex(subscriber => subscriber === newSubscriber);
       this.subscribers.splice(foundSubscriberIndex, 1);
     }
+  }
+
+  public next(update: Update<Value>): void {
+    this.emit(update(this.value));
   }
 }
 
