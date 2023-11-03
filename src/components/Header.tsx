@@ -14,6 +14,11 @@ export function Header() {
             About
           </Link>
         </li>
+        <li>
+          <Link to="/theme">
+            Theme
+          </Link>
+        </li>
       </ul>
     </header>
   );
