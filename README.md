@@ -130,11 +130,18 @@ function Counter() {
     countSignal.emit(count + 1);
   }, [count]);
 
+  const decrement = useCallback(() => {
+    countSignal.next(oldCount => oldCount - 1);
+  }, []);
+
   return (
     <Fragment>
       <p>Count: {count}</p>
       <button onClick={increment}>
         Increment
+      </button>
+      <button onClick={decrement}>
+        Decrement
       </button>
     </Fragment>
   );
