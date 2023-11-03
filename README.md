@@ -18,6 +18,7 @@ Signal Library for React
 - [Usage](#usage)
   - [Custom hook](#custom-hook)
   - [Computed value](#computed-value)
+  - [HTTP requests](#http-requests)
 - [Contributing](#contributing)
 - [Issues](#issues)
 - [Security](#security)
@@ -522,6 +523,97 @@ export const HomePage = () => {
 ```
 
 [Back to summary](#summary)
+
+### HTTP requests
+
+In this section, we showcase a practical example of utilizing the React Signal library to manage HTTP requests and state in a React component. The code snippets illustrate the creation and use of signals for handling loading indicators, error messages, and user data.
+
+The first three code snippets demonstrate the creation of signals for error handling, loading indicators, and user data, respectively. Each signal instance is initialized with an initial value and will be used to manage the corresponding state throughout the component's lifecycle.
+
+The final code snippet presents a React component called `UserPage`, which utilizes these signals to orchestrate an HTTP request. It also showcases how signals are leveraged to manage loading and error states gracefully, ensuring a smooth user experience. The use of signals simplifies the handling of asynchronous operations and state transitions, resulting in cleaner and more maintainable code.
+
+
+```typescript
+import { Signal } from "@aminnairi/react-signal";
+
+export const errorSignal = new Signal<Error | null>(null);
+```
+
+```typescript
+import { Signal } from "@aminnairi/react-signal";
+
+export const loadingSignal = new Signal(false);
+```
+
+```typescript
+import { Signal } from "@aminnairi/react-signal";
+
+export type User = {
+  id: number,
+  username: string
+}
+
+export const userSignal = new Signal<User | null>(null);
+```
+
+```tsx
+import { useEffect } from "react";
+import { useSignal } from "@aminnairi/react-signal";
+import { userSignal } from "../signals/users";
+import { loadingSignal } from "../signals/loading";
+import { errorSignal } from "../signals/error";
+
+export const UserPage = () => {
+  const user = useSignal(userSignal);
+  const loading = useSignal(loadingSignal);
+  const error = useSignal(errorSignal);
+
+  useEffect(() => {
+    errorSignal.emit(null);
+    loadingSignal.emit(true);
+
+    fetch("https://jsonplaceholder.typicode.com/users/1").then(response => {
+      return response.json();
+    }).then(user => {
+      userSignal.emit({
+        id: user.id,
+        username: user.username
+      });
+    }).catch(error => {
+      errorSignal.emit(error);
+    }).finally(() => {
+      loadingSignal.emit(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <p>Loading...</p>
+    );
+  }
+
+  if (error) {
+    return error.message;
+  }
+
+  if (!user) {
+    return (
+      <p>No user found</p>
+    );
+  }
+
+  return (
+    <table>
+      <tbody>
+        <tr>
+          <td>{user.id}</td>
+          <td>{user.username}</td>
+        </tr>
+      </tbody>
+    </table>
+  );
+};
+```
 
 ## Contributing
 
