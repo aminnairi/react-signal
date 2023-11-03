@@ -19,6 +19,11 @@ export function Header() {
             Theme
           </Link>
         </li>
+        <li>
+          <Link to="/user">
+            User
+          </Link>
+        </li>
       </ul>
     </header>
   );
