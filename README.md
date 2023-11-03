@@ -11,20 +11,19 @@ Signal Library for React
 - [API](#api)
   - [Signal](#signal)
   - [useSignal](#usesignal)
+  - [useSignalConstructor](#usesignalconstructor)
   - [LocalStorageSignal](#localstoragesignal)
   - [SessionStorageSignal](#sessionstoragesignal)
   - [StorageSignal](#storagesignal)
 - [Usage](#usage)
   - [Custom hook](#custom-hook)
   - [Computed value](#computed-value)
-  - [Persistence](#persistence)
 - [Contributing](#contributing)
 - [Issues](#issues)
 - [Security](#security)
 - [License](#license)
 - [Changelog](#changelog)
 - [Code of Conduct](#code-of-conduct)
-
 
 [Back to summary](#summary)
 
