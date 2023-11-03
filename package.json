@@ -3,7 +3,7 @@
   "name": "@aminnairi/react-signal",
   "types": "dist/index.d.ts",
   "description": "Signal Library for React",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/aminnairi/react-signal",
   "license": "MIT",
   "main": "dist/index.js",
