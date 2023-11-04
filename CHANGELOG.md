@@ -2,10 +2,15 @@
 
 ## Versions
 
+- [`1.1.1`](#111)
 - [`1.1.0`](#110)
 - [`1.0.0`](#100)
 - [`0.2.0`](#020)
 - [`0.1.0`](#010)
+
+## 1.1.1
+
+- Fix for the must call super before this error ([#25](https://github.com/aminnairi/react-signal/pull/25))
 
 ## 1.1.0
 
