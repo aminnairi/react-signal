@@ -1,17 +1,16 @@
 import { Fragment, useCallback } from "react";
-import { useSignal } from "../hooks";
-import { themeSignal } from "../signals/theme";
+import { useThemeState } from "../state/theme";
 
 export const ThemePage = () => {
-  const theme = useSignal(themeSignal);
+  const [theme, setTheme, removeTheme] = useThemeState();
 
   const toggleTheme = useCallback(() => {
-    themeSignal.next(oldTheme => oldTheme === "light" ? "dark" : "light");
-  }, []);
+    setTheme(oldTheme => oldTheme === "light" ? "dark" : "light");
+  }, [setTheme]);
 
   const reset = useCallback(() => {
-    themeSignal.remove();
-  }, []);
+    removeTheme();
+  }, [removeTheme]);
 
   return (
     <Fragment>
