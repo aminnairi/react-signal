@@ -116,3 +116,104 @@ export const useSignal = <Value>(signal: Signal<Value>): Value => {
 export const useSignalConstructor = <Value>(signalConstructor: SignalConstructor<Value>) => {
   return useSignal(signalConstructor());
 }
+
+export function isSetSignalConstructor<Value>(input: unknown): input is ((oldValue: Value) => Value) {
+  return typeof input === "function";
+}
+
+export type SetStateFunction<Value> = (valueOrConstructor: Value | ((oldValue: Value) => Value)) => void
+
+export type UseStateFunction<Value> = () => [Value, SetStateFunction<Value>];
+
+export function createState<Value>(initialValue: Value): UseStateFunction<Value> {
+  const signal = new Signal(initialValue);
+
+  function useState(): [Value, SetStateFunction<Value>] {
+    const signalValue = useSignal(signal);
+
+    function setState(valueOrConstructor: Value | ((oldValue: Value) => Value)): void {
+      if (isSetSignalConstructor<Value>(valueOrConstructor)) {
+        signal.next(previousValue => {
+          return valueOrConstructor(previousValue);
+        });
+        return;
+      }
+
+      signal.emit(valueOrConstructor);
+    }
+
+    return [signalValue, setState];
+  }
+
+  return useState;
+}
+
+export type SetLocalStorageStateFunction<Value> = (value: Value | ((oldValue: Value) => Value)) => void;
+
+export type RemoveLocalStorageStateFunction = () => void;
+
+export function isSetLocalStorageSignalConstructor<Value>(input: unknown): input is ((oldValue: Value) => Value) {
+  return typeof input === "function";
+}
+
+export function createLocalStorageState<Value>(options: LocalStorageSignalConstructor<Value>) {
+  const signal = new LocalStorageSignal(options);
+
+  function useLocalStorageState(): [Value, SetLocalStorageStateFunction<Value>, RemoveLocalStorageStateFunction] {
+    const signalValue = useSignal(signal);
+
+    function setLocalStorageState(valueOrConstructor: Value | ((oldValue: Value) => Value)): void {
+      if (isSetLocalStorageSignalConstructor<Value>(valueOrConstructor)) {
+        signal.next(oldValue => {
+          return valueOrConstructor(oldValue);
+        })
+        return;
+      }
+
+      signal.emit(valueOrConstructor);
+    }
+
+    function removeLocaleStorageState() {
+      signal.remove();
+    }
+
+    return [signalValue, setLocalStorageState, removeLocaleStorageState];
+  }
+
+  return useLocalStorageState;
+}
+
+export type SetSessionStorageStateFunction<Value> = (value: Value | ((oldValue: Value) => Value)) => void;
+
+export type RemoveSessionStorageStateFunction = () => void;
+
+export function isSetSessionStorageSignalConstructor<Value>(input: unknown): input is ((oldValue: Value) => Value) {
+  return typeof input === "function";
+}
+
+export function createSessionStorageState<Value>(options: SessionStorageSignalConstructor<Value>) {
+  const signal = new SessionStorageSignal(options);
+
+  function useSessionStorageState(): [Value, SetSessionStorageStateFunction<Value>, RemoveSessionStorageStateFunction] {
+    const signalValue = useSignal(signal);
+
+    function setSessionStorageState(valueOrConstructor: Value | ((oldValue: Value) => Value)): void {
+      if (isSetSessionStorageSignalConstructor<Value>(valueOrConstructor)) {
+        signal.next(oldValue => {
+          return valueOrConstructor(oldValue);
+        })
+        return;
+      }
+
+      signal.emit(valueOrConstructor);
+    }
+
+    function removeSessionStorageState() {
+      signal.remove();
+    }
+
+    return [signalValue, setSessionStorageState, removeSessionStorageState];
+  }
+
+  return useSessionStorageState;
+}
