@@ -6,14 +6,6 @@ At @aminnairi/react-signal, we take the security of our users and the community 
 
 To report a security vulnerability, please follow these steps:
 
-**Privately Notify the Maintainers:**
-
-Contact the maintainers directly by sending an email to [maintainer-email@example.com]. Please do not publicly disclose the vulnerability until we've had a chance to assess and address it.
-
-**Provide Details:**
-
-In your email, include a detailed description of the vulnerability. The more information you can provide, the better. This should include details on how to reproduce the issue and its potential impact.
-
 **Maintainer Response:**
 
 The maintainers will acknowledge your report and work with you to address the vulnerability. We may request additional information from you if needed.
