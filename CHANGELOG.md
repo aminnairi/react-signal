@@ -2,11 +2,16 @@
 
 ## Versions
 
+- [`1.2.0`](#120)
 - [`1.1.1`](#111)
 - [`1.1.0`](#110)
 - [`1.0.0`](#100)
 - [`0.2.0`](#020)
 - [`0.1.0`](#010)
+
+## 1.2.0
+
+- Added hooks for better developer experience ([#27](https://github.com/aminnairi/react-signal/pull/27))
 
 ## 1.1.1
 
