@@ -34,8 +34,9 @@
     "test": "vitest run --coverage",
     "coverage": "coveralls < coverage/lcov.info",
     "types": "tsc --project tsconfig.build.json --declaration --emitDeclarationOnly",
-    "preview": "vite preview"
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "deploy": "npm run build && npm run types && npm publish --access public"
   },
   "peerDependencies": {
     "react": ">=16.8"
