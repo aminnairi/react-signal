@@ -18,6 +18,9 @@ Signal Library for React
   - [LocalStorageSignal](#localstoragesignal)
   - [SessionStorageSignal](#sessionstoragesignal)
   - [StorageSignal](#storagesignal)
+  - [createState](#createstate)
+  - [createLocalStorageState](#createlocalstoragestate)
+  - [createSessionStorageState](#createsessionstoragestate)
 - [Usage](#usage)
   - [Custom hook](#custom-hook)
   - [Computed value](#computed-value)
@@ -219,7 +222,7 @@ import { LocalStorageSignal } from "@aminnairi/react-signal";
 export type Theme = "light" | "dark"
 
 export const themeSignal = new LocalStorageSignal<Theme>({
-  key: "theme", 
+  key: "theme",
   value: "dark",
   validation: (value): value is Theme => {
     return value === "dark" || value === "light"
@@ -287,7 +290,7 @@ import { SessionStorageSignal } from "@aminnairi/react-signal";
 export type Theme = "light" | "dark"
 
 export const themeSignal = new SessionStorageSignal<Theme>({
-  key: "theme", 
+  key: "theme",
   value: "dark",
   validation: (value): value is Theme => {
     return value === "dark" || value === "light"
@@ -364,7 +367,7 @@ const myStorage = new MyStorage();
 
 export const themeSignal = new StorageSignal<Theme>({
   storage: myStorage,
-  key: "theme", 
+  key: "theme",
   value: "dark",
   validation: (value): value is Theme => {
     return value === "dark" || value === "light"
@@ -402,6 +405,355 @@ export const ThemePage = () => {
 ```
 
 In this example, we create a `themeSignal` that uses a custom storage solution (in this case, `MyStorage`) to persist and manage the theme of your application. This approach allows you to use your own storage solution while still benefiting from the features of the `StorageSignal`.
+
+### createState
+
+```typescript
+type SetStateFunction<Value> = (valueOrConstructor: Value | ((oldValue: Value) => Value)) => void
+
+type UseStateFunction<Value> = () => [Value, SetStateFunction<Value>]
+
+function createState<Value>(initialValue: Value): UseStateFunction<Value>
+```
+
+This function allows you to simplify the creation of signals by providing a higher level function.
+
+```tsx
+import { useCallback } from "react";
+import { createState } from "@aminnairi/react-signal";
+
+const useCounterState = createState(0);
+
+export const Counter = () => {
+  const [counter, setCounter] = useCounterState();
+
+  const increment = useCallback(() => {
+    setCounter(previousCounter => {
+      return previousCounter + 1;
+    });
+  }, [setCounter]);
+
+  const decrementCounter = useCallback(() => {
+    setCounter(counter - 1);
+  }, [counter]);
+
+  return (
+    <>
+      <button onClick={decrement}>
+        decrement
+      </button>
+      <span>
+        {counter}
+      </span>
+      <button onClick={increment}>
+        increment
+      </button>
+    </>
+  );
+}
+```
+
+You can also make it a custom hook if needed.
+
+```typescript
+import { useCallback } from "react";
+import { createState } from "@aminnairi/react-signal";
+
+const useCounterState = createState(0);
+
+export const useCounter = () => {
+  const [counter, setCounter] = useCounterState();
+
+  const increment = useCallback(() => {
+    setCounter(previousCounter => {
+      return previousCounter + 1;
+    });
+  }, [setCounter]);
+
+  const decrementCounter = useCallback(() => {
+    setCounter(counter - 1);
+  }, [counter]);
+
+  return {
+    counter,
+    increment,
+    decrement
+  };
+}
+```
+
+And use it as usual.
+
+```tsx
+import { useCallback } from "react";
+import { useCounter } from "../hooks/useCounter";
+
+export const Counter = () => {
+  const { counter, increment, decrement } = useCounter();
+
+  return (
+    <>
+      <button onClick={decrement}>
+        decrement
+      </button>
+      <span>
+        {counter}
+      </span>
+      <button onClick={increment}>
+        increment
+      </button>
+    </>
+  );
+}
+```
+
+[Back to summary](#summary)
+
+### createLocalStorageState
+
+```typescript
+type SetLocalStorageStateFunction<Value> = (value: Value | ((oldValue: Value) => Value)) => void
+
+type RemoveLocalStorageStateFunction = () => void
+
+function createLocalStorageState<Value>(options: LocalStorageSignalConstructor<Value>)
+```
+
+This function allows you to simplify the creation of signals by providing a higher level function. Additionally, it uses internally the `LocalStorageSignal` constructor, so your state remains in the client's browser and is retrieved when the window is loaded or reloaded.
+
+```tsx
+import { useCallback } from "react";
+import { createLocalStorageState } from "@aminnairi/react-signal";
+
+const useCounterState = createLocalStorageState(0);
+
+export const Counter = () => {
+  const [counter, setCounter, resetCounter] = useCounterState();
+
+  const increment = useCallback(() => {
+    setCounter(previousCounter => {
+      return previousCounter + 1;
+    });
+  }, [setCounter]);
+
+  const decrementCounter = useCallback(() => {
+    setCounter(counter - 1);
+  }, [counter]);
+
+  const reset = useCallback(() => {
+    resetCounter();
+  }, [resetCounter]);
+
+  return (
+    <>
+      <button onClick={decrement}>
+        decrement
+      </button>
+      <span>
+        {counter}
+      </span>
+      <button onClick={increment}>
+        increment
+      </button>
+      <button onClick={reset}>
+        reset
+      </button>
+    </>
+  );
+}
+```
+
+You can also make it a custom hook if needed.
+
+```typescript
+import { useCallback } from "react";
+import { createLocalStorageState } from "@aminnairi/react-signal";
+
+const useCounterState = createLocalStorageState(0);
+
+export const useCounter = () => {
+  const [counter, setCounter, resetCounter] = useCounterState();
+
+  const increment = useCallback(() => {
+    setCounter(previousCounter => {
+      return previousCounter + 1;
+    });
+  }, [setCounter]);
+
+  const decrementCounter = useCallback(() => {
+    setCounter(counter - 1);
+  }, [counter]);
+
+  const reset = useCallback(() => {
+    resetCounter();
+  }, [resetCounter]);
+
+  return {
+    counter,
+    increment,
+    decrement,
+    reset
+  };
+}
+```
+
+And use it as usual.
+
+```tsx
+import { useCallback } from "react";
+import { useCounter } from "../hooks/useCounter";
+
+export const Counter = () => {
+  const {
+    counter,
+    increment,
+    decrement,
+    reset
+    } = useCounter();
+
+  return (
+    <>
+      <button onClick={decrement}>
+        decrement
+      </button>
+      <span>
+        {counter}
+      </span>
+      <button onClick={increment}>
+        increment
+      </button>
+      <button onClick={reset}>
+        reset
+      </button>
+    </>
+  );
+}
+```
+
+[Back to summary](#summary)
+
+### createSessionStorageState
+
+```typescript
+type SetSessionStorageStateFunction<Value> = (value: Value | ((oldValue: Value) => Value)) => void
+
+type RemoveSessionStorageStateFunction = () => void
+
+function createSessionStorageState<Value>(options: SessionStorageSignalConstructor<Value>)
+```
+
+This function allows you to simplify the creation of signals by providing a higher level function. Additionally, it uses internally the `SessionStorageSignal` constructor, so your state remains in the client's browser and is retrieved when the window is loaded or reloaded.
+
+In contrast to the `LocalStorageSignal`, the `SessionStorageSignal` keep the data until the session is closed, for some browser, a session is equivalent to the lifetime of the tab, so when the tab is closed, the session is also wiped out.
+
+```tsx
+import { useCallback } from "react";
+import { createSessionStorageState } from "@aminnairi/react-signal";
+
+const useCounterState = createSessionStorageState(0);
+
+export const Counter = () => {
+  const [counter, setCounter, removeCounter] = useCounterState();
+
+  const increment = useCallback(() => {
+    setCounter(previousCounter => {
+      return previousCounter + 1;
+    });
+  }, [setCounter]);
+
+  const decrement = useCallback(() => {
+    setCounter(counter - 1);
+  }, [counter]);
+
+  const reset = useCallback(() => {
+    removeCounter();
+  }, [removeCounter]);
+
+  return (
+    <>
+      <button onClick={decrement}>
+        decrement
+      </button>
+      <span>
+        {counter}
+      </span>
+      <button onClick={increment}>
+        increment
+      </button>
+      <button onClick={reset}>
+        reset
+      </button>
+    </>
+  );
+}
+```
+
+You can also make it a custom hook if needed.
+
+```typescript
+import { useCallback } from "react";
+import { createSessionStorageState } from "@aminnairi/react-signal";
+
+const useCounterState = createSessionStorageState(0);
+
+export const useCounter = () => {
+  const [counter, setCounter, resetCounter] = useCounterState();
+
+  const increment = useCallback(() => {
+    setCounter(previousCounter => {
+      return previousCounter + 1;
+    });
+  }, [setCounter]);
+
+  const decrementCounter = useCallback(() => {
+    setCounter(counter - 1);
+  }, [counter]);
+
+  const reset = useCallback(() => {
+    resetCounter();
+  }, [reset]);
+
+  return {
+    counter,
+    increment,
+    decrement,
+    reset
+  };
+}
+```
+
+And use it as usual.
+
+```tsx
+import { useCallback } from "react";
+import { useCounter } from "../hooks/useCounter";
+
+export const Counter = () => {
+  const {
+    counter,
+    increment,
+    decrement,
+    reset
+  } = useCounter();
+
+  return (
+    <>
+      <button onClick={decrement}>
+        decrement
+      </button>
+      <span>
+        {counter}
+      </span>
+      <button onClick={increment}>
+        increment
+      </button>
+      <button onClick={reset}>
+        reset
+      </button>
+    </>
+  );
+}
+```
 
 [Back to summary](#summary)
 
