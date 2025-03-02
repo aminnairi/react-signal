@@ -11,7 +11,7 @@ export type Update<Value> = (oldValue: Value) => Value;
 export type StorageSignalConstructor<Value> = {
   storage: Storage,
   key: string,
-  value: Value,
+  fallback: Value,
   parse: Parser<Value>
 }
 
@@ -58,12 +58,12 @@ export class StorageSignal<Value> extends Signal<Value> {
   private key: string;
   private storage: Storage;
 
+  public constructor({ storage, key, fallback, parse }: StorageSignalConstructor<Value>) {
     try {
       const storageValue = JSON.parse(storage.getItem(key) || "");
-
       super(parse(storageValue));
     } catch {
-      super(value);
+      super(fallback);
     }
 
     this.key = key;
@@ -85,17 +85,18 @@ export class LocalStorageSignal<Value> extends StorageSignal<Value> {
     super({
       storage: localStorage,
       key,
-      value,
+      fallback,
       parse
     });
   }
 }
 
 export class SessionStorageSignal<Value> extends StorageSignal<Value> {
+  public constructor({ key, fallback, parse }: SessionStorageSignalConstructor<Value>) {
     super({
       storage: sessionStorage,
       key,
-      value,
+      fallback,
       parse
     });
   }
