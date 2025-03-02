@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react";
 
 export type Subscriber = () => void;
 
-export type Validation<Value> = (value: unknown) => value is Value;
+export type Parser<Value> = (value: unknown) => Value;
 
 export type SignalConstructor<Value> = () => Signal<Value>
 
@@ -12,7 +12,7 @@ export type StorageSignalConstructor<Value> = {
   storage: Storage,
   key: string,
   value: Value,
-  validation: Validation<Value>
+  parse: Parser<Value>
 }
 
 export type LocalStorageSignalConstructor<Value> = Omit<StorageSignalConstructor<Value>, "storage">
@@ -58,15 +58,10 @@ export class StorageSignal<Value> extends Signal<Value> {
   private key: string;
   private storage: Storage;
 
-  public constructor({ storage, key, value, validation }: StorageSignalConstructor<Value>) {
     try {
       const storageValue = JSON.parse(storage.getItem(key) || "");
 
-      if (validation(storageValue)) {
-        super(storageValue);
-      } else {
-        super(value);
-      }
+      super(parse(storageValue));
     } catch {
       super(value);
     }
@@ -86,23 +81,22 @@ export class StorageSignal<Value> extends Signal<Value> {
 }
 
 export class LocalStorageSignal<Value> extends StorageSignal<Value> {
-  public constructor({ key, value, validation }: LocalStorageSignalConstructor<Value>) {
+  public constructor({ key, fallback, parse }: LocalStorageSignalConstructor<Value>) {
     super({
       storage: localStorage,
       key,
       value,
-      validation
+      parse
     });
   }
 }
 
 export class SessionStorageSignal<Value> extends StorageSignal<Value> {
-  public constructor({ key, value, validation }: SessionStorageSignalConstructor<Value>) {
     super({
       storage: sessionStorage,
       key,
       value,
-      validation
+      parse
     });
   }
 }
