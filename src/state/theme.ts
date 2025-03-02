@@ -1,11 +1,18 @@
 import { createLocalStorageState } from "../hooks";
+import { z } from "zod";
 
-export type Theme = "light" | "dark"
+
+export const themeSchema = z.union([
+  z.literal("dark"),
+  z.literal("light")
+]);
+
+export type Theme = z.infer<typeof themeSchema>;
 
 export const useThemeState = createLocalStorageState<Theme>({
   key: "theme",
-  value: "dark",
-  validation: (value): value is Theme => {
-    return value === "dark" || value === "light"
+  fallback: "dark",
+  parse: (value): Theme => {
+    return themeSchema.parse(value);
   }
 });
