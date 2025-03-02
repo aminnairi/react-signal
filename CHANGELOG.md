@@ -2,6 +2,7 @@
 
 ## Versions
 
+- [`2.0.0`](#200)
 - [`1.2.1`](#121)
 - [`1.2.0`](#120)
 - [`1.1.1`](#111)
@@ -9,6 +10,12 @@
 - [`1.0.0`](#100)
 - [`0.2.0`](#020)
 - [`0.1.0`](#010)
+
+## 2.0.0
+
+- `value` property is now `fallback` for the `StorageSignal`, `LocalStorageSignal` and `SessionStorageSignal` classes their corresponding functions
+- `validation` property is now `parse` in the `StorageSignal`, `LocalStorageSignal` and `SessionStorageSignal` classes their corresponding functions and is now used to parse the state instead of just validating it
+- New function `createState`, `createSessionStorageState` and `createLocalStorageState` added to ease the creation of signals and their corresponding state
 
 ## 1.2.1
 
