@@ -198,19 +198,19 @@ In this example, the `useSignalConstructor` hook is used to create and initializ
 ### LocalStorageSignal
 
 ```typescript
-type Validation<Value> = (value: unknown) => value is Value;
+type Parser<Value> = (value: unknown) => Value;
 
 type StorageSignalConstructor<Value> = {
     storage: Storage;
     key: string;
-    value: Value;
-    validation: Validation<Value>;
+    fallback: Value;
+    parse: Validation<Value>;
 };
 
 type LocalStorageSignalConstructor<Value> = Omit<StorageSignalConstructor<Value>, "storage">;
 
 class LocalStorageSignal<Value> extends StorageSignal<Value> {
-  constructor({ key, value, validation }: LocalStorageSignalConstructor<Value>);
+  constructor({ key, fallback, parse }: LocalStorageSignalConstructor<Value>);
 }
 ```
 
@@ -223,10 +223,8 @@ export type Theme = "light" | "dark"
 
 export const themeSignal = new LocalStorageSignal<Theme>({
   key: "theme",
-  value: "dark",
-  validation: (value): value is Theme => {
-    return value === "dark" || value === "light"
-  }
+  fallback: "dark",
+  parse: (value): Theme => ["dark", "light"].includes(value) ? value : "light"
 });
 ```
 
@@ -266,19 +264,19 @@ In this example, we create a `themeSignal` that is stored in local storage under
 ### SessionStorageSignal
 
 ```typescript
-type Validation<Value> = (value: unknown) => value is Value;
+type Parser<Value> = (value: unknown) => Value;
 
 type StorageSignalConstructor<Value> = {
     storage: Storage;
     key: string;
-    value: Value;
-    validation: Validation<Value>;
+    fallback: Value;
+    parse: Parser<Value>;
 };
 
 type SessionStorageSignalConstructor<Value> = Omit<StorageSignalConstructor<Value>, "storage">;
 
 class SessionStorageSignal<Value> extends StorageSignal<Value> {
-  constructor({ key, value, validation }: StorageSignalConstructor<Value>);
+  constructor({ key, fallback, parse }: StorageSignalConstructor<Value>);
 }
 ```
 
@@ -291,10 +289,8 @@ export type Theme = "light" | "dark"
 
 export const themeSignal = new SessionStorageSignal<Theme>({
   key: "theme",
-  value: "dark",
-  validation: (value): value is Theme => {
-    return value === "dark" || value === "light"
-  }
+  fallback: "dark",
+  parse: (value): Theme => ["dark", "light"].includes(value) ? value : "light"
 });
 ```
 
@@ -334,19 +330,19 @@ In this example, we create a `themeSignal` that is stored in session storage und
 ### StorageSignal
 
 ```typescript
-type Validation<Value> = (value: unknown) => value is Value;
+type Parser<Value> = (value: unknown) => Value;
 
 type StorageSignalConstructor<Value> = {
     storage: Storage;
     key: string;
-    value: Value;
-    validation: Validation<Value>;
+    fallback: Value;
+    parse: Parser<Value>;
 };
 
 class StorageSignal<Value> extends Signal<Value> {
     private key;
     private storage;
-    constructor({ storage, key, value, validation }: StorageSignalConstructor<Value>);
+    constructor({ storage, key, fallback, parse }: StorageSignalConstructor<Value>);
     emit(newValue: Value): void;
     remove(): void;
 }
@@ -525,7 +521,11 @@ This function allows you to simplify the creation of signals by providing a high
 import { useCallback } from "react";
 import { createLocalStorageState } from "@aminnairi/react-signal";
 
-const useCounterState = createLocalStorageState(0);
+const useCounterState = createLocalStorageState({
+  key: "counter",
+  parse: (value: unknown): number => Number(value) || 0,
+  fallback: 0
+});
 
 export const Counter = () => {
   const [counter, setCounter, resetCounter] = useCounterState();
@@ -569,7 +569,11 @@ You can also make it a custom hook if needed.
 import { useCallback } from "react";
 import { createLocalStorageState } from "@aminnairi/react-signal";
 
-const useCounterState = createLocalStorageState(0);
+const useCounterState = createLocalStorageState({
+  key: "counter",
+  parse: (value: unknown): number => Number(value) || 0,
+  fallback: 0
+});
 
 export const useCounter = () => {
   const [counter, setCounter, resetCounter] = useCounterState();
@@ -650,7 +654,11 @@ In contrast to the `LocalStorageSignal`, the `SessionStorageSignal` keep the dat
 import { useCallback } from "react";
 import { createSessionStorageState } from "@aminnairi/react-signal";
 
-const useCounterState = createSessionStorageState(0);
+const useCounterState = createSessionStorageState({
+  key: "counter",
+  fallback: 0,
+  parse: (value: unknown): number => Number(value) || 0
+});
 
 export const Counter = () => {
   const [counter, setCounter, removeCounter] = useCounterState();
@@ -694,7 +702,11 @@ You can also make it a custom hook if needed.
 import { useCallback } from "react";
 import { createSessionStorageState } from "@aminnairi/react-signal";
 
-const useCounterState = createSessionStorageState(0);
+const useCounterState = createSessionStorageState({
+  key: "counter",
+  fallback: 0,
+  parse: (value: unknown): number => Number(value) || 0
+});
 
 export const useCounter = () => {
   const [counter, setCounter, resetCounter] = useCounterState();
