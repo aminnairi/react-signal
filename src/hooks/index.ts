@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 export type Subscriber = () => void;
 
@@ -126,7 +126,7 @@ export function createState<Value>(initialValue: Value): UseStateFunction<Value>
   function useState(): [Value, SetStateFunction<Value>] {
     const signalValue = useSignal(signal);
 
-    function setState(valueOrConstructor: Value | ((oldValue: Value) => Value)): void {
+    const setState = useCallback((valueOrConstructor: Value | ((oldValue: Value) => Value)): void => {
       if (isSetSignalConstructor<Value>(valueOrConstructor)) {
         signal.next(previousValue => {
           return valueOrConstructor(previousValue);
@@ -135,7 +135,7 @@ export function createState<Value>(initialValue: Value): UseStateFunction<Value>
       }
 
       signal.emit(valueOrConstructor);
-    }
+    }, []);
 
     return [signalValue, setState];
   }
@@ -157,7 +157,7 @@ export function createLocalStorageState<Value>(options: LocalStorageSignalConstr
   function useLocalStorageState(): [Value, SetLocalStorageStateFunction<Value>, RemoveLocalStorageStateFunction] {
     const signalValue = useSignal(signal);
 
-    function setLocalStorageState(valueOrConstructor: Value | ((oldValue: Value) => Value)): void {
+    const setLocalStorageState = useCallback((valueOrConstructor: Value | ((oldValue: Value) => Value)): void => {
       if (isSetLocalStorageSignalConstructor<Value>(valueOrConstructor)) {
         signal.next(oldValue => {
           return valueOrConstructor(oldValue);
@@ -166,11 +166,11 @@ export function createLocalStorageState<Value>(options: LocalStorageSignalConstr
       }
 
       signal.emit(valueOrConstructor);
-    }
+    }, []);
 
-    function removeLocaleStorageState() {
+    const removeLocaleStorageState = useCallback(() => {
       signal.remove();
-    }
+    }, []);
 
     return [signalValue, setLocalStorageState, removeLocaleStorageState];
   }
@@ -192,7 +192,7 @@ export function createSessionStorageState<Value>(options: SessionStorageSignalCo
   function useSessionStorageState(): [Value, SetSessionStorageStateFunction<Value>, RemoveSessionStorageStateFunction] {
     const signalValue = useSignal(signal);
 
-    function setSessionStorageState(valueOrConstructor: Value | ((oldValue: Value) => Value)): void {
+    const setSessionStorageState = useCallback((valueOrConstructor: Value | ((oldValue: Value) => Value)): void => {
       if (isSetSessionStorageSignalConstructor<Value>(valueOrConstructor)) {
         signal.next(oldValue => {
           return valueOrConstructor(oldValue);
@@ -201,11 +201,11 @@ export function createSessionStorageState<Value>(options: SessionStorageSignalCo
       }
 
       signal.emit(valueOrConstructor);
-    }
+    }, []);
 
-    function removeSessionStorageState() {
+    const removeSessionStorageState = useCallback(() => {
       signal.remove();
-    }
+    }, []);
 
     return [signalValue, setSessionStorageState, removeSessionStorageState];
   }
